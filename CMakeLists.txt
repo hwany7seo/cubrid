@@ -482,7 +482,7 @@ endif(CMAKE_BUILD_TYPE MATCHES "Profile")
 set(API_DIR                  ${CMAKE_SOURCE_DIR}/src/api)
 set(BASE_DIR                 ${CMAKE_SOURCE_DIR}/src/base)
 set(BROKER_DIR               ${CMAKE_SOURCE_DIR}/src/broker)
-set(CCI_DIR                  ${CMAKE_SOURCE_DIR}/src/cci)
+set(CCI_DIR                  ${CMAKE_SOURCE_DIR}/cubrid-cci/src/cci)
 set(CM_COMMON_DIR            ${CMAKE_SOURCE_DIR}/src/cm_common)
 set(COMMUNICATION_DIR        ${CMAKE_SOURCE_DIR}/src/communication)
 set(COMPAT_DIR               ${CMAKE_SOURCE_DIR}/src/compat)
@@ -502,7 +502,7 @@ set(REPLICATION_DIR          ${CMAKE_SOURCE_DIR}/src/replication)
 set(SESSION_DIR              ${CMAKE_SOURCE_DIR}/src/session)
 set(STORAGE_DIR              ${CMAKE_SOURCE_DIR}/src/storage)
 set(THREAD_DIR               ${CMAKE_SOURCE_DIR}/src/thread)
-set(TOOLS_DIR                ${CMAKE_SOURCE_DIR}/src/tools)
+set(TOOLS_DIR                ${CMAKE_SOURCE_DIR}/cubrid-cci/src/tools)
 set(TRANSACTION_DIR          ${CMAKE_SOURCE_DIR}/src/transaction)
 set(WIN_TOOLS_DIR            ${CMAKE_SOURCE_DIR}/src/win_tools)
 set(XASL_DIR                 ${CMAKE_SOURCE_DIR}/src/xasl)
@@ -513,7 +513,6 @@ include_directories(
   src/api
   src/base
   src/broker
-  src/cci
   src/communication
   src/compat
   src/connection
@@ -530,11 +529,15 @@ include_directories(
   src/session
   src/storage
   src/thread
-  src/tools
   src/transaction
   src/xasl
   )
-
+if(WITH_CCI)
+include_directories(
+  cubrid-cci/src/cci
+  cubrid-cci/src/tools
+)
+endif(WITH_CCI)
 include(CheckFunctionExists)
 check_function_exists(asprintf HAVE_ASPRINTF)
 check_function_exists(vasprintf HAVE_VASPRINTF)
@@ -1168,14 +1171,15 @@ add_subdirectory(sa)
 add_subdirectory(cs)
 add_subdirectory(cubrid)
 add_subdirectory(util)
-add_subdirectory(cci)
+if(WITH_CCI)
+add_subdirectory(cubrid-cci)
+endif(WITH_CCI)
 add_subdirectory(broker)
 add_subdirectory(cm_common)
 add_subdirectory(conf)
 add_subdirectory(msg)
 add_subdirectory(demo)
 add_subdirectory(contrib)
-add_subdirectory(tools)
 add_subdirectory(locales)
 add_subdirectory(timezones)
 add_subdirectory(jsp)
@@ -1249,6 +1253,9 @@ endif(USE_CUBRID_ENV)
 
 if(WITH_SOURCES)
   install(DIRECTORY ${CMAKE_SOURCE_DIR}/src/ DESTINATION ${CUBRID_SRCDIR})
+  if(WITH_CCI)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/cubrid-cci/src/ DESTINATION ${CUBRID_SRCDIR})
+  endif(WITH_CCI)
 endif(WITH_SOURCES)
 
 # for packaging

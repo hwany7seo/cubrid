@@ -53,6 +53,7 @@ last_checking_msg=""
 output_packages=""
 without_cmserver=""
 without_jdbc="false"
+with_cci="false"
 
 function print_check ()
 {
@@ -200,6 +201,16 @@ function build_configure ()
     without_jdbc="true"
     print_error "JDBC source path is not exist. It will not be built"
   fi
+  
+  print_check "Checking CCI directory"
+  if [ ! -d "$source_dir/cubrid-cci" -o ! -d "$source_dir/cubrid-cci/src" ]; then
+    with_cci="false"
+    print_error "CCI source path is not exist. It will not be built"
+  else
+    with_cci="true"
+    configure_options="$configure_options -DWITH_CCI=true"
+  fi
+
 
   print_check "Setting environment variables"
   if [ "x$java_dir" != "x" ]; then
@@ -291,6 +302,12 @@ function build_package ()
   if [ ! -d "$source_dir/cubrid-jdbc" -o ! -d "$source_dir/cubrid-jdbc/src" ]; then
     without_jdbc="true"
     print_error "JDBC source path is not exist. It will not be packaged"
+  fi
+  
+  print_check "Checking CCI directory"
+  if [ ! -d "$source_dir/cubrid-cci" -o ! -d "$source_dir/cubrid-cci/src" ]; then
+    with_cci="false"
+    print_error "CCI source path is not exist. It will not be packaged"
   fi
 
   if [ ! -d $output_dir ]; then
