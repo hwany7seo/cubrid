@@ -177,6 +177,13 @@ function build_clean ()
       rm -rf $build_dir/*
     fi
   fi
+
+  echo "source dir : $source_dir"
+
+  if [ -f $source_dir/cubrid-cci/CCI-VERSION-DIR ]; then
+    rm $source_dir/cubrid-cci/CCI-VERSION-DIR
+  fi
+
   print_result "OK"
 }
 
@@ -304,10 +311,12 @@ function build_package ()
     print_error "JDBC source path is not exist. It will not be packaged"
   fi
   
-  print_check "Checking CCI directory"
+  print_error "Checking CCI directory"
   if [ ! -d "$source_dir/cubrid-cci" -o ! -d "$source_dir/cubrid-cci/src" ]; then
     with_cci="false"
     print_error "CCI source path is not exist. It will not be packaged"
+  else 
+    with_cci="true"
   fi
 
   if [ ! -d $output_dir ]; then
@@ -331,7 +340,10 @@ function build_package ()
 	# add VERSION-DIST instead of VERSION file for full version string
 	(cd $source_dir && echo "$version" > VERSION-DIST && ln -sfT . cubrid-$version &&
 	  (git ls-files -o VERSION-DIST ; git ls-files &&
-	    (cd $source_dir/cubridmanager && git ls-files) | sed -e "s|^|cubridmanager/|") | sed -e "/^VERSION$/d" -e "s|^|cubrid-$version/|" | $archive_cmd &&
+	    (cd $source_dir/cubridmanager && git ls-files) | sed -e "s|^|cubridmanager/|" && 
+	    ([ "$without_jdbc" = "true" ] || (cd $source_dir/cubrid-jdbc  && git ls-files -o output/VERSION-DIST; git ls-files) | sed -e "/^VERSION$/d" | sed -e "s|^|cubrid-jdbc/|") &&
+	    ([ "$with_cci" = "false" ] || (cd $source_dir/cubrid-cci  && git ls-files -o CCI-VERSION-DIST; git ls-files) | sed -e "/^BUILD_NUMBER$/d" | sed -e "s|^|cubrid-cci/|")) | 
+            sed -e "/^VERSION$/d" -e "/^cubrid-jdbc$/d" -e "s|^|cubrid-$version/|" | $archive_cmd &&
 	    rm cubrid-$version VERSION-DIST)
 	if [ $? -eq 0 ]; then
 	  output_packages="$output_packages $package_name"
@@ -346,7 +358,10 @@ function build_package ()
 	fi
 
 	if [ "$package" = "cci" ]; then
-          package_basename="$product_name-CCI-$version-Linux.$build_target"
+	  if [ "$with_cci" = "true" ]; then
+	    cci_version=$(cat $source_dir/cubrid-cci/CCI-VERSION-DIST)
+            package_basename="$product_name-CCI-$cci_version-Linux.$build_target"
+	  fi
         else
           package_basename="$product_name-$version-Linux.$build_target"
         fi
@@ -360,8 +375,10 @@ function build_package ()
 	  package_name="$package_basename.sh"
 	  (cd $build_dir && cpack -G STGZ -B $output_dir)
 	elif [ "$package" = "cci" ]; then
-	  package_name="$package_basename.tar.gz"
-	  (cd $build_dir && cpack -G TGZ -D CPACK_COMPONENTS_ALL="CCI" -B $output_dir)
+	  if [ "$with_cci" = "true" ]; then
+	    package_name="$package_basename.tar.gz"
+	    (cd $build_dir && cpack -G TGZ -D CPACK_COMPONENTS_ALL="CCI" -B $output_dir)
+	  fi
 	elif [ "$package" = "rpm" ]; then
 	  package_name="$package_basename.rpm"
 	  (cd $build_dir && cpack -G RPM -B $output_dir)
