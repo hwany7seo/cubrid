@@ -180,8 +180,8 @@ function build_clean ()
 
   echo "source dir : $source_dir"
 
-  if [ -f $source_dir/cubrid-cci/CCI-VERSION-DIR ]; then
-    rm $source_dir/cubrid-cci/CCI-VERSION-DIR
+  if [ -f $source_dir/cubrid-cci/CCI-VERSION-DIST ]; then
+    rm $source_dir/cubrid-cci/CCI-VERSION-DIST
   fi
 
   print_result "OK"

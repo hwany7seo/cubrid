@@ -136,17 +136,22 @@ for /f "tokens=1,2,3,4 delims=." %%a IN (%SOURCE_DIR%\%VERSION_FILE%) DO (
   set PATCH_VERSION=%%c
   set EXTRA_VERSION=%%d
 )
+
+set CUBRID_MAJOR_START_DATE=2019-12-12
 if NOT "%EXTRA_VERSION%." == "." (
   for /f "tokens=1,* delims=-" %%a IN ("%EXTRA_VERSION%") DO set SERIAL_NUMBER=%%a
 ) else (
   if EXIST "%SOURCE_DIR%\.git" (
-    for /f "delims=" %%i in ('"%GIT_PATH%" rev-list --count HEAD') do set SERIAL_NUMBER=%%i
-    for /f "delims=" %%i in ('"%GIT_PATH%" rev-parse --short=7 HEAD') do set HASH_TAG=%%i
+    for /f "delims=" %%i in ('"%GIT_PATH%" rev-list --count --after %CUBRID_MAJOR_START_DATE% HEAD') do set SERIAL_NUMBER=0000%%i
+    for /f "delims=" %%i in ('"%GIT_PATH%" rev-parse HEAD') do set HASH_TAG=%%i
   ) else (
     set EXTRA_VERSION=0000-unknown
     set SERIAL_NUMBER=0000
   )
 )
+set SERIAL_NUMBER=%SERIAL_NUMBER:~-4%
+if NOT "%HASH_TAG%." == "." set HASH_TAG=%HASH_TAG:~0,7%
+
 if NOT "%HASH_TAG%." == "." set EXTRA_VERSION=%SERIAL_NUMBER%-%HASH_TAG%
 echo Build Version is [%VERSION% (%MAJOR_VERSION%.%MINOR_VERSION%.%PATCH_VERSION%.%EXTRA_VERSION%)]
 set VERSION=%MAJOR_VERSION%.%MINOR_VERSION%.%PATCH_VERSION%.%EXTRA_VERSION%
