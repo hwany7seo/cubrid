@@ -314,6 +314,67 @@ if(UNIX)
 endif(UNIX)
 
 
+set(BROKER_LOG_TOP_SOURCES
+  ${BROKER_DIR}/broker_log_top.c
+  ${BROKER_DIR}/cas_query_info.c
+  ${BROKER_DIR}/broker_log_time.c
+  ${BROKER_DIR}/broker_log_sql_list.c
+  ${BROKER_DIR}/broker_log_util.c
+  ${BROKER_DIR}/log_top_string.c
+  ${BROKER_DIR}/broker_log_top_tran.c
+  )
+SET_SOURCE_FILES_PROPERTIES(
+  ${BROKER_LOG_TOP_SOURCES}
+  PROPERTIES LANGUAGE CXX
+  )
+if(WIN32)
+  list(APPEND BROKER_LOG_TOP_SOURCES ${CMAKE_BINARY_DIR}/version.rc)
+endif(WIN32)
+add_executable(broker_log_top ${BROKER_LOG_TOP_SOURCES})
+target_compile_definitions(broker_log_top PRIVATE ${BROKER_DEFS} BROKER_LOG_TOP)
+target_link_libraries(broker_log_top LINK_PRIVATE cubridcs)
+
+
+set(BROKERADMIN_SOURCES
+  ${BROKER_DIR}/broker_admin_so.c
+  ${BROKER_DIR}/broker_admin_pub.c
+  ${BROKER_DIR}/broker_shm.c
+  ${BROKER_DIR}/broker_error.c
+  ${BROKER_DIR}/broker_util.c
+  ${BROKER_DIR}/broker_config.c
+  ${BROKER_DIR}/broker_max_heap.c
+  ${BROKER_DIR}/broker_process_size.c
+  ${BROKER_DIR}/broker_process_info.c
+  ${BROKER_DIR}/broker_filename.c
+  ${BROKER_DIR}/broker_acl.c
+  ${BROKER_DIR}/shard_metadata.c
+  ${BROKER_DIR}/shard_shm.c
+  ${BROKER_DIR}/shard_key_func.c
+  )
+SET_SOURCE_FILES_PROPERTIES(
+  ${BROKERADMIN_SOURCES}
+  PROPERTIES LANGUAGE CXX
+  )
+if(WIN32)
+  list(APPEND BROKERADMIN_SOURCES ${BASE_DIR}/porting.c)
+  list(APPEND BROKERADMIN_SOURCES ${BROKER_DIR}/broker_list.c)
+  list(APPEND BROKERADMIN_SOURCES ${BROKER_DIR}/broker_wsa_init.c)
+  SET_SOURCE_FILES_PROPERTIES(
+    ${BASE_DIR}/porting.c
+    ${BROKER_DIR}/broker_list.c
+    ${BROKER_DIR}/broker_wsa_init.c
+    PROPERTIES LANGUAGE CXX
+  )
+endif(WIN32)
+add_library(brokeradmin SHARED ${BROKERADMIN_SOURCES})
+set_target_properties(brokeradmin PROPERTIES SOVERSION "${CUBRID_MAJOR_VERSION}.${CUBRID_MINOR_VERSION}")
+target_compile_definitions(brokeradmin PRIVATE ${BROKER_DEFS} _UC_ADMIN_SO_)
+target_link_libraries(brokeradmin LINK_PRIVATE cubridcs)
+if(WIN32)
+  target_link_libraries(brokeradmin LINK_PRIVATE ws2_32)
+endif(WIN32)
+
+if(WITH_CCI)
 set(BROKER_LOG_CONVERTER_SOURCES
   ${BROKER_DIR}/broker_log_converter.c
   ${BROKER_DIR}/broker_log_util.c
@@ -332,7 +393,6 @@ target_link_libraries(broker_log_converter LINK_PRIVATE cubridcs)
 if(WIN32)
   target_link_libraries(broker_log_converter LINK_PRIVATE ws2_32)
 endif(WIN32)
-
 
 set(BROKER_LOG_RUNNER_SOURCES
   ${BROKER_DIR}/cas_runner.c
@@ -394,28 +454,6 @@ if(WIN32)
   target_link_libraries(broker_tester LINK_PRIVATE ws2_32)
 endif(WIN32)
 
-
-set(BROKER_LOG_TOP_SOURCES
-  ${BROKER_DIR}/broker_log_top.c
-  ${BROKER_DIR}/cas_query_info.c
-  ${BROKER_DIR}/broker_log_time.c
-  ${BROKER_DIR}/broker_log_sql_list.c
-  ${BROKER_DIR}/broker_log_util.c
-  ${BROKER_DIR}/log_top_string.c
-  ${BROKER_DIR}/broker_log_top_tran.c
-  )
-SET_SOURCE_FILES_PROPERTIES(
-  ${BROKER_LOG_TOP_SOURCES}
-  PROPERTIES LANGUAGE CXX
-  )
-if(WIN32)
-  list(APPEND BROKER_LOG_TOP_SOURCES ${CMAKE_BINARY_DIR}/version.rc)
-endif(WIN32)
-add_executable(broker_log_top ${BROKER_LOG_TOP_SOURCES})
-target_compile_definitions(broker_log_top PRIVATE ${BROKER_DEFS} BROKER_LOG_TOP)
-target_link_libraries(broker_log_top LINK_PRIVATE cubridcs)
-
-
 set(CUBRID_REPLAY_SOURCES
   ${BROKER_DIR}/broker_log_replay.c
   ${BROKER_DIR}/broker_log_util.c
@@ -439,47 +477,8 @@ target_link_libraries(cubrid_replay LINK_PRIVATE cubridcs cascci)
 if(WIN32)
   target_link_libraries(cubrid_replay LINK_PRIVATE ws2_32)
 endif(WIN32)
-
-
-set(BROKERADMIN_SOURCES
-  ${BROKER_DIR}/broker_admin_so.c
-  ${BROKER_DIR}/broker_admin_pub.c
-  ${BROKER_DIR}/broker_shm.c
-  ${BROKER_DIR}/broker_error.c
-  ${BROKER_DIR}/broker_util.c
-  ${BROKER_DIR}/broker_config.c
-  ${BROKER_DIR}/broker_max_heap.c
-  ${BROKER_DIR}/broker_process_size.c
-  ${BROKER_DIR}/broker_process_info.c
-  ${BROKER_DIR}/broker_filename.c
-  ${BROKER_DIR}/broker_acl.c
-  ${BROKER_DIR}/shard_metadata.c
-  ${BROKER_DIR}/shard_shm.c
-  ${BROKER_DIR}/shard_key_func.c
-  )
-SET_SOURCE_FILES_PROPERTIES(
-  ${BROKERADMIN_SOURCES}
-  PROPERTIES LANGUAGE CXX
-  )
-if(WIN32)
-  list(APPEND BROKERADMIN_SOURCES ${BASE_DIR}/porting.c)
-  list(APPEND BROKERADMIN_SOURCES ${BROKER_DIR}/broker_list.c)
-  list(APPEND BROKERADMIN_SOURCES ${BROKER_DIR}/broker_wsa_init.c)
-  SET_SOURCE_FILES_PROPERTIES(
-    ${BASE_DIR}/porting.c
-    ${BROKER_DIR}/broker_list.c
-    ${BROKER_DIR}/broker_wsa_init.c
-    PROPERTIES LANGUAGE CXX
-  )
-endif(WIN32)
-add_library(brokeradmin SHARED ${BROKERADMIN_SOURCES})
-set_target_properties(brokeradmin PROPERTIES SOVERSION "${CUBRID_MAJOR_VERSION}.${CUBRID_MINOR_VERSION}")
-target_compile_definitions(brokeradmin PRIVATE ${BROKER_DEFS} _UC_ADMIN_SO_)
-target_link_libraries(brokeradmin LINK_PRIVATE cubridcs)
-if(WIN32)
-  target_link_libraries(brokeradmin LINK_PRIVATE ws2_32)
-endif(WIN32)
-
+endif(WITH_CCI)
+if(WITH_CCI)
 install(TARGETS
   cub_broker
   broker_monitor
@@ -497,6 +496,21 @@ install(TARGETS
   LIBRARY DESTINATION ${CUBRID_LIBDIR} COMPONENT Library
   PUBLIC_HEADER DESTINATION ${CUBRID_INCLUDEDIR} COMPONENT Header
   )
+else(WITH_CCI)  
+install(TARGETS
+  cub_broker
+  broker_monitor
+  broker_changer
+  cubrid_broker
+  cub_cas
+  cub_proxy
+  broker_log_top
+  brokeradmin
+  RUNTIME DESTINATION ${CUBRID_BINDIR} COMPONENT Application
+  LIBRARY DESTINATION ${CUBRID_LIBDIR} COMPONENT Library
+  PUBLIC_HEADER DESTINATION ${CUBRID_INCLUDEDIR} COMPONENT Header
+  )  
+endif(WITH_CCI)
 
 # TODO: compat uc script?
 

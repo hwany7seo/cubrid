@@ -45,6 +45,8 @@ set BUILD_TYPE=RelWithDebInfo
 set CMAKE_PATH=C:\Program Files\CMake\bin\cmake.exe
 set CPACK_PATH=C:\Program Files\CMake\bin\cpack.exe
 set GIT_PATH=C:\Program Files\Git\bin\git.exe
+set WITH_CCI=false
+
 rem default list is all
 set BUILD_LIST=ALL
 rem unset BUILD_ARGS
@@ -170,10 +172,11 @@ echo Packages Ootput directory is [%DIST_DIR%].
 if NOT EXIST "%DIST_DIR%" md %DIST_DIR%
 GOTO :EOF
 
-
 :BUILD_CUBRID
 echo Building CUBRID in %BUILD_DIR%
 cd /d %BUILD_DIR%
+
+if EXIST "%SOURCE_DIR%\cubrid-cci\src" set WITH_CCI=true
 
 rem TODO: get generator from command line
 if "%BUILD_TARGET%" == "Win32" (
@@ -181,7 +184,7 @@ if "%BUILD_TARGET%" == "Win32" (
 ) ELSE (
   set CMAKE_GENERATOR="%BUILD_GENERATOR:"=% Win64"
 )
-"%CMAKE_PATH%" -G %CMAKE_GENERATOR% -DWITH_CCI=true -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%BUILD_PREFIX% -DPARALLEL_JOBS=10 %SOURCE_DIR%
+"%CMAKE_PATH%" -G %CMAKE_GENERATOR% -DWITH_CCI=%WITH_CCI% -DCMAKE_BUILD_TYPE=%BUILD_TYPE% -DCMAKE_INSTALL_PREFIX=%BUILD_PREFIX% -DPARALLEL_JOBS=10 %SOURCE_DIR%
 if ERRORLEVEL 1 (echo FAILD. & GOTO :EOF) ELSE echo OK.
 
 "%CMAKE_PATH%" --build . --config %BUILD_TYPE% --target install
