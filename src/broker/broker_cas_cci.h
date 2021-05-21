@@ -31,6 +31,12 @@
 
 /*
  * broker_cas_cci.h -
+ *
+ * CAUTION!
+ *
+ * In case of common,  
+ * cci repository source (src/cci/cas_cci.h) must be updated,
+ * becuase CCI source and Engine source have been separated.
  */
 
 #ifndef	_BROKER_CAS_CCI_H_
@@ -225,4 +231,12 @@ typedef enum
   CCI_PARAM_MODE_INOUT = 3
 } T_CCI_PARAM_MODE;
 
+/*
+ * CAUTION!
+ *
+ * In case of common,  
+ * cci repository source (src/cci/cas_cci.h) must be updated,
+ * becuase CCI source and Engine source have been separated.
+ */
+ 
 #endif				/* _BROKER_CAS_CCI_H_ */
