@@ -23,6 +23,6 @@ if not "%1"=="" (
 )
 
 if NOT exist %CUBRID_DATABASES% md %CUBRID_DATABASES%
-if NOT exist %CUBRID_DATABASES%\databases.txt echo # > %CUBRID_DATABASES%\databases.txt
+if NOT exist %CUBRID_DATABASES%\databases.txt type NUL > %CUBRID_DATABASES%\databases.txt
 
 :exit
