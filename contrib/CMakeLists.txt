@@ -92,8 +92,8 @@ endif(WIN32)
 # msi scripts for windows
 if(WIN32)
   install(FILES
-    ${CMAKE_SOURCE_DIR}/contrib/install_script_for_windows/make_cubrid_demo_for_install.bat
-    ${CMAKE_SOURCE_DIR}/contrib/install_script_for_windows/create_for_databases.bat
+    ${CMAKE_SOURCE_DIR}/contrib/install_scripts_for_windows/make_cubrid_demo_for_install.bat
+    ${CMAKE_SOURCE_DIR}/contrib/install_scripts_for_windows/create_for_databases.bat
     DESTINATION ${CUBRID_DATADIR}/install_scripts_for_windows/)
 endif(WIN32)
 
