@@ -95,7 +95,7 @@
 <!-- Create Databases folder and databases.txt -->
     <SetProperty Id="CreateforDatabases" Before="CreateforDatabases" Sequence="execute" Value="&quot;[SystemFolder]CMD.EXE&quot; /C &quot;[#CM_FP_Unspecified.share.install_script_for_windows.create_for_databases.bat] [INSTALL_ROOT]&quot;"/>
     <CustomAction Id="CreateforDatabases" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore"/>
-<!-- CreateDemodb -->
+<!-- Create demodb -->
     <Property Id="INSTALLWITHDEMODB" Value="1"/>
     <SetProperty Id="CreateDemodb" Before="CreateDemodb" Sequence="execute" Value="&quot;[SystemFolder]CMD.EXE&quot; /C &quot;[#CM_FP_Unspecified.share.install_script_for_windows.make_cubrid_demo_for_install.bat] demodb [INSTALL_ROOT]&quot;"/>
     <CustomAction Id="CreateDemodb" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore"/>
