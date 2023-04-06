@@ -30,8 +30,9 @@ if not "%1"=="" (
 
 if exist %DBNAME% goto done
 
-if NOT exist %CUBRID_DATABASES%\demodb md %CUBRID_DATABASES%\demodb
-else (
+if NOT exist %CUBRID_DATABASES%\demodb (
+  md %CUBRID_DATABASES%\demodb 
+) else (
   del /Q %CUBRID_DATABASES%\demodb\demodb_vinf
   del /Q %CUBRID_DATABASES%\demodb\demodb_lginf
   del /Q %CUBRID_DATABASES%\demodb\demodb_lgat
