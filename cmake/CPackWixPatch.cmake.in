@@ -70,7 +70,8 @@
     <InstallExecuteSequence>
       <Custom Action="RegisterService" After="InstallFiles"><![CDATA[NOT Installed]]></Custom>
       <Custom Action="CreateScheduledTask" After="RegisterService"><![CDATA[NOT Installed]]></Custom>
-      <Custom Action="CreateDemodb" After="CreateScheduledTask"><![CDATA[NOT Installed AND INSTALLWITHDEMODB]]></Custom>
+      <Custom Action="CreateforDatabases" After="CreateScheduledTask"><![CDATA[NOT Installed]]></Custom>
+      <Custom Action="CreateDemodb" After="CreateforDatabases"><![CDATA[NOT Installed AND INSTALLWITHDEMODB]]></Custom>
       <Custom Action="DeleteScheduledTask" After="InstallInitialize"><![CDATA[Installed]]></Custom>
       <Custom Action="KillTray" Before="DeleteScheduledTask"><![CDATA[Installed]]></Custom>
     </InstallExecuteSequence>
@@ -91,7 +92,10 @@
 <!-- Kill Tray before uninstall -->
     <SetProperty Id="KillTray" Before="KillTray" Sequence="execute" Value="&quot;[SystemFolder]TASKKILL.EXE&quot; /F /IM CUBRID_Service_Tray.exe"/>
     <CustomAction Id="KillTray" Return="ignore" Impersonate="no" Execute="deferred" BinaryKey="WixCA" DllEntry="WixQuietExec"/>
-<!-- Create demodb -->
+<!-- Create Databases folder and databases.txt -->
+    <SetProperty Id="CreateforDatabases" Before="CreateforDatabases" Sequence="execute" Value="&quot;[SystemFolder]CMD.EXE&quot; /C &quot;[#CM_FP_Unspecified.share.windows_scripts.create_for_databases.bat] [INSTALL_ROOT]&quot;"/>
+    <CustomAction Id="CreateforDatabases" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore"/>
+<!-- CreateDemodb -->
     <Property Id="INSTALLWITHDEMODB" Value="1"/>
     <SetProperty Id="CreateDemodb" Before="CreateDemodb" Sequence="execute" Value="&quot;[SystemFolder]CMD.EXE&quot; /C &quot;[#CM_FP_Unspecified.demo.make_cubrid_demo.bat] demodb [INSTALL_ROOT]&quot;"/>
     <CustomAction Id="CreateDemodb" BinaryKey="WixCA" DllEntry="CAQuietExec" Execute="deferred" Return="ignore"/>

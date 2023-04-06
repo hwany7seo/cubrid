@@ -86,6 +86,7 @@ endif(ENABLE_SYSTEMTAP)
 if(WIN32)
   install(FILES
     ${CMAKE_SOURCE_DIR}/contrib/windows_scripts/cubrid_env.bat
+    ${CMAKE_SOURCE_DIR}/contrib/windows_scripts/create_for_databases.bat
     DESTINATION ${CUBRID_DATADIR}/windows_scripts/)
 endif(WIN32)
 
