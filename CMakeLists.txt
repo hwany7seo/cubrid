@@ -73,7 +73,9 @@ option(ENABLE_SYSTEMTAP "Enable dynamic tracing support using systemtap" ${ENABL
 option(USE_DUMA "Use Detect Unintended Memory Access library" OFF)
 option(USE_CUBRID_ENV "Use CUBRID environment variables" ON)
 option(WITH_JDBC "Build with JDBC driver" ON)
+if(UNIX)
 option(WITH_CMSERVER "Build with Manager server" ON)
+endif(UNIX)
 option(UNIT_TESTS "Unit tests" OFF)
 option(WITH_CCI "Build with CCI driver" ON)
 
@@ -835,6 +837,7 @@ if(WITH_JDBC AND EXISTS ${CMAKE_SOURCE_DIR}/cubrid-jdbc/src)
 endif()
 
 # include subdirectories
+if(UNIX)
 add_subdirectory(sa)
 add_subdirectory(cs)
 add_subdirectory(cubrid)
@@ -854,6 +857,7 @@ add_subdirectory(pl_engine)
 if(AT_LEAST_ONE_UNIT_TEST)
   add_subdirectory(unit_tests)
 endif()
+endif(UNIX)
 
 if(WIN32)
   add_subdirectory(win)
