@@ -994,9 +994,9 @@ receiver_thr_f (void *arg)
 	{
 	  /* Protocol version */
 	  client_version = CAS_PROTO_UNPACK_NET_VER (driver_version);
-	  if (client_version < CAS_PROTO_MAKE_VER (PROTOCOL_V13)) 
+	  if (client_version < CAS_PROTO_MAKE_VER (PROTOCOL_V13))
 	    {
-	      CAS_SEND_ERROR_CODE (clt_sock_fd, CAS_ER_COMMUNICATION);
+	      send_error_to_driver (clt_sock_fd, CAS_ER_NOT_SUPPORT_CLIENT, cas_req_header);
 	      CLOSE_SOCKET (clt_sock_fd);
 	      continue;
 	    }
