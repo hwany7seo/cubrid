@@ -723,6 +723,7 @@ target_include_directories(cubrid PRIVATE ${JAVA_INC} ${EP_INCLUDES} ${FLEX_INCL
 
 if(UNIX)
   target_link_libraries(cubrid LINK_PRIVATE -Wl,-whole-archive ${EP_LIBS} -Wl,-no-whole-archive)
+  target_link_options(cubrid PRIVATE "LINKER:--exclude-libs,libssl.a:libcrypto.a")
   target_link_libraries(cubrid LINK_PUBLIC ${CMAKE_THREAD_LIBS_INIT} ${CMAKE_DL_LIBS})
   target_link_libraries(cubrid PUBLIC stdc++fs)
   target_link_libraries(cubrid PUBLIC rt)
@@ -808,6 +809,7 @@ install(FILES
   )
 install(FILES
   ${CM_COMMON_DIR}/cm_stat.h
+  ${CM_COMMON_DIR}/cm_dep.h
   DESTINATION ${CUBRID_INCLUDEDIR} COMPONENT Header
   )
 
