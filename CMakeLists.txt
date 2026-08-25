@@ -810,16 +810,9 @@ if(WIN32)
 endif(WIN32)
 
 # for cmserver
-if(WITH_CCI AND WITH_CMSERVER AND UNIX AND EXISTS ${CMAKE_SOURCE_DIR}/cubridmanager/server/CMakeLists.txt)
+if(WITH_CMSERVER AND UNIX AND EXISTS ${CMAKE_SOURCE_DIR}/cubridmanager/server/CMakeLists.txt)
   add_subdirectory(cubridmanager/server)
 endif()
-if(UNIX AND WITH_LIBOPENSSL STREQUAL "EXTERNAL")
-  install(DIRECTORY ${LIBOPENSSL_INCLUDES}/openssl
-    DESTINATION ${CUBRID_INCLUDEDIR}/${CUBRID_3RDPARTYDIR} COMPONENT Header)
-  install(FILES ${LIBOPENSSL_LIBS}
-    DESTINATION ${CUBRID_LIBDIR}/${CUBRID_3RDPARTYDIR} COMPONENT Library)
-endif()
-
 # create empty directories
 install(DIRECTORY DESTINATION ${CUBRID_3RDPARYDIR})
 install(DIRECTORY DESTINATION ${CUBRID_LOGDIR})

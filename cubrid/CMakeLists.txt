@@ -809,7 +809,6 @@ install(FILES
   )
 install(FILES
   ${CM_COMMON_DIR}/cm_stat.h
-  ${CM_COMMON_DIR}/cm_dep.h
   DESTINATION ${CUBRID_INCLUDEDIR} COMPONENT Header
   )
 
