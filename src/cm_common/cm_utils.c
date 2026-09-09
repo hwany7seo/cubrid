@@ -369,7 +369,7 @@ uIsDatabaseActive (char *dbn)
 }
 
 int
-uIsDatabaseActive2 (T_SERVER_STATUS_RESULT * cmd_res, char *dbn)
+uIsDatabaseActive2 (T_SERVER_STATUS_RESULT *cmd_res, char *dbn)
 {
   T_SERVER_STATUS_INFO *info;
   int i;
@@ -479,7 +479,7 @@ func_clean_return:
 
 
 static void
-read_server_status_output (T_SERVER_STATUS_RESULT * res, char *out_file)
+read_server_status_output (T_SERVER_STATUS_RESULT *res, char *out_file)
 {
   T_SERVER_STATUS_INFO *info;
   int num_info, num_alloc;
@@ -580,7 +580,7 @@ new_cmd_result (void)
 }
 
 void
-cmd_result_free (T_CMD_RESULT * res)
+cmd_result_free (T_CMD_RESULT *res)
 {
   if (res != NULL)
     {
